@@ -1,0 +1,5 @@
+main: net.starelement.picoplay.PicoPlay
+name: PicoPlay
+load: STARTUP
+version: 1.0.0
+api: 1.0.0
