@@ -116,4 +116,8 @@ public class PicoPlay extends PluginBase {
             }
         }
     }
+
+    public void readyGame(GameTemplate gt) {
+        PicoLevel pl = gt.getRandomLevel();
+    }
 }
