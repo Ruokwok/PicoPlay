@@ -1,6 +1,7 @@
 package net.starelement.picoplay;
 
 import cn.nukkit.Server;
+import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.Utils;
@@ -9,11 +10,15 @@ import net.starelement.picoplay.game.Game;
 import net.starelement.picoplay.game.GameTemplate;
 import net.starelement.picoplay.i18n.L;
 import net.starelement.picoplay.level.PicoLevel;
+import org.iq80.leveldb.util.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class PicoPlay extends PluginBase {
 
@@ -47,6 +52,7 @@ public class PicoPlay extends PluginBase {
     @Override
     public void onEnable() {
         PicoLevel.load();
+        clean();
     }
 
     public void registerGame(Class game) {
@@ -83,5 +89,31 @@ public class PicoPlay extends PluginBase {
 
     public int getGameCount() {
         return games.size();
+    }
+
+    public void clean() {
+        Map<Integer, Level> levels = Server.getInstance().getLevels();
+        for (Map.Entry<Integer, Level> entry : levels.entrySet()) {
+            Level level = entry.getValue();
+            if (level != Server.getInstance().getDefaultLevel()) {
+                level.unload();
+                File file = new File("worlds/" + level.getFolderName());
+                try {
+                    FileUtils.deleteRecursively(file);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        File worlds = new File("worlds");
+        for (File file : worlds.listFiles()) {
+            if (!Server.getInstance().getDefaultLevel().getFolderName().equals(file.getName())) {
+                try {
+                    FileUtils.deleteRecursively(file);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 }
