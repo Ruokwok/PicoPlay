@@ -1,6 +1,7 @@
 package net.starelement.picoplay.level;
 
 import cn.nukkit.Server;
+import cn.nukkit.level.Level;
 import cn.nukkit.utils.Config;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -57,6 +58,7 @@ public class PicoLevel {
         try {
             zip.extractAll("worlds/" + name);
             Server.getInstance().loadLevel(name);
+            PicoPlay.getInstance().setLevelRule(Server.getInstance().getLevelByName(name));
         } catch (ZipException e) {
             Server.getInstance().getLogger().logException(e);
         }

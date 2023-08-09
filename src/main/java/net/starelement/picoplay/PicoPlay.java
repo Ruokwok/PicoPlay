@@ -1,6 +1,7 @@
 package net.starelement.picoplay;
 
 import cn.nukkit.Server;
+import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Level;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
@@ -53,6 +54,7 @@ public class PicoPlay extends PluginBase {
     public void onEnable() {
         PicoLevel.load();
         clean();
+        setLevelRule(Server.getInstance().getDefaultLevel());
     }
 
     public void registerGame(Class game) {
@@ -119,5 +121,12 @@ public class PicoPlay extends PluginBase {
 
     public void readyGame(GameTemplate gt) {
         PicoLevel pl = gt.getRandomLevel();
+    }
+
+    public void setLevelRule(Level level) {
+        level.setTime(6000);
+        level.getGameRules().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        level.getGameRules().setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        level.getGameRules().setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
     }
 }
