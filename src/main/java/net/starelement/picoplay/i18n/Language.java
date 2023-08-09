@@ -6,6 +6,7 @@ import cn.nukkit.utils.Utils;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Language {
 
@@ -19,6 +20,12 @@ public class Language {
         this.name = map.get("language.name");
     }
 
+    public Language(String language) {
+        this.code = language;
+        this.name = "EMPTY";
+        this.map = new HashMap<>();
+    }
+
     public String get(String key) {
         String str = map.get(key);
         if (str == null || str.isEmpty()) {
@@ -28,8 +35,16 @@ public class Language {
         }
     }
 
+    public boolean contains(String key) {
+        return map.containsKey(key);
+    }
+
     public String getName() {
         return name;
+    }
+
+    public Set<Map.Entry<String, String>> entrySet() {
+        return map.entrySet();
     }
 
     private static Map<String, String> load(InputStream stream) {
