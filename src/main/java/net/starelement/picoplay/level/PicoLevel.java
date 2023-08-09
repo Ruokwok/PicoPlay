@@ -8,7 +8,6 @@ import net.starelement.picoplay.PicoPlay;
 import net.starelement.picoplay.i18n.L;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +25,7 @@ public class PicoLevel {
                     FileHeader fileHeader = zip.getFileHeader("level.yml");
                     Config config = new Config();
                     config.load(zip.getInputStream(fileHeader));
-                    list.add(new PicoLevel(config.getString("name"), config.getList("game")));
+                    list.add(new PicoLevel(config.getString("name"), config.getString("game")));
                     PicoPlay.getInstance().getLogger().info(L.get("pico.console.load.level") + config.getString("name"));
                 } catch (Exception e) {
                     Server.getInstance().getLogger().logException(e);
@@ -35,12 +34,20 @@ public class PicoLevel {
         }
     }
 
-    private String name;
-    private List<String> games;
+    public static List<PicoLevel> getList() {
+        return list;
+    }
 
-    public PicoLevel(String name, List<String> games) {
+    private String name;
+    private String game;
+
+    public PicoLevel(String name, String game) {
         this.name = name;
-        this.games = games;
+        this.game = game;
+    }
+
+    public String getGame() {
+        return game;
     }
 
 }

@@ -6,11 +6,13 @@ import cn.nukkit.utils.Config;
 import cn.nukkit.utils.Utils;
 import net.starelement.picoplay.cmd.PicoPlayCommand;
 import net.starelement.picoplay.game.Game;
+import net.starelement.picoplay.game.GameTemplate;
 import net.starelement.picoplay.i18n.L;
 import net.starelement.picoplay.level.PicoLevel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PicoPlay extends PluginBase {
@@ -21,7 +23,7 @@ public class PicoPlay extends PluginBase {
         return pp;
     }
 
-    private List<Class> games = new ArrayList<>();
+    private List<GameTemplate> games = new ArrayList<>();
     private Profile profile = new Profile();
     private File levelDir;
 
@@ -50,7 +52,13 @@ public class PicoPlay extends PluginBase {
     public void registerGame(Class game) {
         if (Game.class.isAssignableFrom(game)) {
             if (games.contains(game)) return;
-            games.add(game);
+            GameTemplate gt = new GameTemplate(game);
+            for (PicoLevel level : PicoLevel.getList()) {
+                if (level.getGame().equals(game.getSimpleName())) {
+                    gt.addLevel(level);
+                }
+            }
+            games.add(gt);
             getLogger().info(L.get("chs", "pico.console.register.game") + game.getSimpleName());
         } else {
             throw new RuntimeException();
@@ -63,5 +71,17 @@ public class PicoPlay extends PluginBase {
 
     public File getLevelDir() {
         return levelDir;
+    }
+
+    public void reset() {
+        Collections.shuffle(games);
+    }
+
+    public GameTemplate getGameTemplate(int i) {
+        return games.get(i);
+    }
+
+    public int getGameCount() {
+        return games.size();
     }
 }
